@@ -6,8 +6,6 @@ import 'package:uuid/uuid.dart';
 
 import 'dart:convert';
 
-import 'package:geoflutterfire/src/point.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../Repositories/supplyRepository.dart';
@@ -15,26 +13,26 @@ import '../Repositories/supplyRepository.dart';
 import 'package:flutter_base/main.dart';
 
 class SimpleDynamicChecklistApp extends StatelessWidget {
-  GeoFirePoint point;
-
-  SimpleDynamicChecklistApp(this.point);
+  final GeoPoint point;
+  final String geohash;
+  SimpleDynamicChecklistApp(this.point, this.geohash);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SimpleDynamicChecklist(point),
+      home: SimpleDynamicChecklist(point, geohash),
     );
   }
 }
 
 class SimpleDynamicChecklist extends StatefulWidget {
-  GeoFirePoint point;
-
-  SimpleDynamicChecklist(this.point);
+  final GeoPoint point;
+  final String geohash;
+  SimpleDynamicChecklist(this.point, this.geohash);
 
   @override
   _SimpleDynamicChecklistState createState() =>
-      _SimpleDynamicChecklistState(point);
+      _SimpleDynamicChecklistState(point, geohash);
 }
 
 class _SimpleDynamicChecklistState extends State<SimpleDynamicChecklist> {
@@ -43,9 +41,9 @@ class _SimpleDynamicChecklistState extends State<SimpleDynamicChecklist> {
   Map<String, String> nameMap;
   Map<String, int> qtyMap;
 
-  GeoFirePoint point;
-
-  _SimpleDynamicChecklistState(this.point);
+  GeoPoint point;
+  String geohash;
+  _SimpleDynamicChecklistState(this.point, this.geohash);
 
   @override
   initState() {
@@ -91,7 +89,7 @@ class _SimpleDynamicChecklistState extends State<SimpleDynamicChecklist> {
     }
     String jsonData = jsonEncode(jsonConvertMap);
     await SupplyRepository()
-        .addMarkerWithChecklist("supplyLocation", point, "supply", jsonData);
+        .addMarkerWithChecklist("supplyLocation", point, geohash, "supply", jsonData);
     redirectToMap();
   }
 
